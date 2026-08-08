@@ -14,6 +14,7 @@
     "dev:web": "npm run dev --workspace web",
     "build": "npm run build --workspace server && npm run build --workspace web",
     "start": "npm run start --workspace server",
+    "check:provider": "npm run check:provider --workspace server",
     "test": "npm run test --workspace server && npm run test --workspace web",
     "typecheck": "npm run typecheck --workspace server && npm run typecheck --workspace web"
   },

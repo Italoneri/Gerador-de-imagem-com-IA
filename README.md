@@ -186,8 +186,27 @@ Regra que guiou a conversão: **todo número vem do handoff**. `14.5px` virou
 ## Scripts
 
 ```bash
-npm run dev         # front + API juntos
-npm run build       # compila os dois
-npm test            # vitest nos dois workspaces
-npm run typecheck   # tsc --noEmit nos dois
+npm run dev              # front + API juntos
+npm run check:provider   # faz uma edição de teste e diz se a chave funciona
+npm run build            # compila os dois
+npm test                 # vitest nos dois workspaces
+npm run typecheck        # tsc --noEmit nos dois
 ```
+
+Rode `npm run check:provider` assim que preencher a chave. Ele manda um PNG mínimo para o
+provedor configurado e responde com ✅ e o tamanho do resultado, ou com o código do erro,
+o detalhe técnico e o que fazer a respeito.
+
+---
+
+## Produção
+
+Em `NODE_ENV=production` o Express passa a servir `web/dist` na mesma origem da API — sem
+CORS, sem segunda hospedagem, sem configurar URL de API no bundle. Junto vêm `trust proxy`
+(para o rate limit contar por visitante e não por proxy), CSP liberando `blob:` (é como
+todas as imagens do app são exibidas) e encerramento gracioso no SIGTERM.
+
+O deploy é `docker compose up -d --build`: um container com o app e outro com o Caddy, que
+cuida do certificado HTTPS sozinho. O roteiro completo para Oracle Cloud — incluindo o
+iptables que a OCI mantém fechado mesmo depois de você liberar a porta na Security List —
+está em **[DEPLOY.md](./DEPLOY.md)**.

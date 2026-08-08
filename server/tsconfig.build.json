@@ -1,0 +1,7 @@
+{
+  // O tsconfig.json principal cobre os testes, porque `typecheck` precisa
+  // checá-los. Este aqui é só para emitir: teste não vai para a imagem de
+  // produção, onde o vitest nem está instalado.
+  "extends": "./tsconfig.json",
+  "exclude": ["src/**/*.test.ts"]
+}

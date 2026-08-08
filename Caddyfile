@@ -1,0 +1,25 @@
+# O domínio vem do ambiente, então este mesmo arquivo serve para o ensaio local
+# (SITE_DOMAIN=localhost, onde o Caddy usa a CA interna dele) e para produção
+# (SITE_DOMAIN=seu.duckdns.org, onde ele pede um certificado Let's Encrypt).
+#
+# Para o certificado público sair, três coisas precisam ser verdade: o domínio
+# resolve para o IP desta máquina, a porta 80 está aberta (é por ela que o
+# Let's Encrypt valida) e a 443 também. Ver DEPLOY.md — na Oracle não basta
+# liberar na Security List, o iptables do host também bloqueia.
+{$SITE_DOMAIN} {
+	encode gzip
+
+	reverse_proxy app:8787 {
+		# Uma edição pode levar mais de um minuto. O padrão do Caddy já é sem
+		# limite, mas deixar explícito evita surpresa se alguém mexer depois.
+		transport http {
+			read_timeout 180s
+			write_timeout 180s
+		}
+	}
+
+	log {
+		output stdout
+		format json
+	}
+}

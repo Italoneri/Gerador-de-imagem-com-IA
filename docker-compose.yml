@@ -1,0 +1,41 @@
+services:
+  app:
+    build:
+      context: .
+      args:
+        # Mesma origem do MAX_UPLOAD_MB do runtime, para o limite do browser e o
+        # do servidor nunca divergirem.
+        VITE_MAX_UPLOAD_MB: ${MAX_UPLOAD_MB:-15}
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      PORT: 8787
+    # Sem `ports:` de propósito — o app só é alcançável pela rede interna do
+    # compose. Quem fala com a internet é o Caddy, e só por HTTPS.
+    expose:
+      - "8787"
+    restart: unless-stopped
+
+  caddy:
+    image: caddy:2-alpine
+    environment:
+      SITE_DOMAIN: ${SITE_DOMAIN:?defina SITE_DOMAIN no .env (ex.: fosco.duckdns.org)}
+    ports:
+      - "80:80"
+      - "443:443"
+      # HTTP/3. O Caddy liga sozinho quando a porta UDP está publicada.
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - app
+    restart: unless-stopped
+
+volumes:
+  # caddy_data guarda os certificados. Sem este volume, cada `up` pediria um
+  # certificado novo ao Let's Encrypt e em poucos deploys você bateria no rate
+  # limit deles (e ficaria sem HTTPS por uma semana).
+  caddy_data:
+  caddy_config:
