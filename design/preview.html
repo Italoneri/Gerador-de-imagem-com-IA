@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Handoff original (referência de diff visual)</title>
+<!--
+  O .dc.html só renderiza dentro do app do Claude Design, que injeta React no
+  window antes de carregar o support.js. Este harness reproduz esse ambiente
+  localmente para dar um alvo de comparação pixel a pixel, sem tocar no handoff.
+-->
+<script src="./vendor/react.production.min.js"></script>
+<script src="./vendor/react-dom.production.min.js"></script>
+</head>
+<body>
+<script>
+  fetch("./Editor IA - Chat.dc.html")
+    .then((r) => r.text())
+    .then((src) => {
+      const doc = new DOMParser().parseFromString(src, "text/html");
+      const helmet = doc.querySelector("helmet");
+      if (helmet) document.head.append(...helmet.children);
+      document.body.append(doc.querySelector("x-dc"));
+      document.body.append(doc.querySelector("script[data-dc-script]"));
+      const runtime = document.createElement("script");
+      runtime.src = "./support.js";
+      document.body.append(runtime);
+    });
+</script>
+</body>
+</html>

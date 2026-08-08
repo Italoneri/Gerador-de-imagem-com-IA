@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+html,body{margin:0;padding:0;background:#0C0C0C}
+*{box-sizing:border-box}
+a{color:#C9541F;text-decoration:none}a:hover{color:#E4682B}
+input,textarea,button{font-family:inherit}
+.app{--bg:#0C0C0C;--surf:#141414;--surf2:#1E1E1E;--line:rgba(255,255,255,.12);--hard:#000;--tx:#EDEBE8;--tx2:#908C88;--or:#C9541F;--or2:#E4682B;--onor:#170D07;--sa:#262626;--sb:#1B1B1B}
+.app[data-theme="light"]{--bg:#EDEAE4;--surf:#F6F4F0;--surf2:#DFDBD4;--line:rgba(0,0,0,.16);--hard:#17150F;--tx:#17150F;--tx2:#6B6764;--or:#C9541F;--or2:#A8420F;--onor:#FFF6EF;--sa:#D6D2CA;--sb:#E5E1DA}
+input::placeholder{color:var(--tx2)}
+::-webkit-scrollbar{width:9px;height:9px}::-webkit-scrollbar-thumb{background:var(--or);border-radius:0}
+@keyframes pulseBar{0%,100%{opacity:.3}50%{opacity:1}}
+@keyframes riseIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+</style>
+</helmet>
+
+<div class="app" data-theme="{{ tema }}" style="display:flex;flex-direction:column;height:100vh;width:100%;background:var(--bg);color:var(--tx);font-family:Archivo,Helvetica,sans-serif;overflow:hidden">
+
+  <header style="display:flex;align-items:stretch;border-bottom:2px solid var(--hard);background:var(--or);flex:none">
+    <div style="display:flex;align-items:center;gap:10px;padding:0 16px;border-right:2px solid var(--hard)">
+      <div style="width:16px;height:16px;background:var(--onor)"></div>
+      <span style="font-size:16px;font-weight:800;letter-spacing:-.02em;color:var(--onor);text-transform:uppercase">{{ appName }}</span>
+    </div>
+    <nav style="display:flex">
+      <sc-for list="{{ abas }}" as="t" hint-placeholder-count="3">
+        <button onClick="{{ t.ir }}" data-ativo="{{ t.ativo }}" style="padding:14px 20px;background:{{ t.bg }};border:none;border-right:2px solid var(--hard);color:{{ t.fg }};font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer">{{ t.rotulo }}</button>
+      </sc-for>
+    </nav>
+    <div style="flex:1;display:flex;align-items:center;justify-content:flex-end;gap:0;padding-right:0">
+      <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--onor);padding:0 16px;opacity:.75">12 CRÉDITOS</span>
+      <button onClick="{{ trocarDevice }}" style="padding:0 14px;align-self:stretch;background:transparent;border:none;border-left:2px solid var(--hard);color:var(--onor);font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;cursor:pointer">{{ rotuloDevice }}</button>
+      <button onClick="{{ trocarTema }}" style="padding:0 14px;align-self:stretch;background:var(--hard);border:none;color:var(--or);font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;cursor:pointer">{{ rotuloTema }}</button>
+    </div>
+  </header>
+
+  <div style="flex:1;display:flex;justify-content:center;min-height:0;background:var(--bg)">
+  <div style="flex:1;display:flex;min-height:0;max-width:{{ larguraApp }};border-left:2px solid var(--line);border-right:2px solid var(--line)">
+
+    <sc-if value="{{ verChat }}" hint-placeholder-val="{{ true }}">
+    <div style="flex:1;display:flex;min-width:0">
+
+      <sc-if value="{{ mostrarRail }}" hint-placeholder-val="{{ true }}">
+      <aside style="width:225px;flex:none;border-right:2px solid var(--hard);background:var(--surf);display:flex;flex-direction:column">
+        <button onClick="{{ novoChat }}" style="display:flex;align-items:center;justify-content:space-between;padding:14px;background:var(--or);border:none;border-bottom:2px solid var(--hard);color:var(--onor);font-size:12.5px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;cursor:pointer" style-hover="background:var(--or2)">
+          <span>Nova edição</span><span style="font-family:'JetBrains Mono',monospace">+</span>
+        </button>
+        <div style="padding:12px 14px 6px;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.14em;color:var(--tx2)">CONVERSAS</div>
+        <div style="display:flex;flex-direction:column;overflow-y:auto">
+          <sc-for list="{{ historico }}" as="h" hint-placeholder-count="4">
+            <div onClick="{{ h.abrir }}" style="display:flex;gap:10px;align-items:center;padding:10px 14px;cursor:pointer;border-bottom:1px solid var(--line)" style-hover="background:var(--or);color:var(--onor)">
+              <div style="width:32px;height:32px;flex:none;background:repeating-linear-gradient(135deg,var(--sa) 0 6px,var(--sb) 6px 12px);border:1px solid var(--line)"></div>
+              <div style="display:flex;flex-direction:column;gap:2px;min-width:0">
+                <span style="font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ h.titulo }}</span>
+                <span style="font-family:'JetBrains Mono',monospace;font-size:9px;opacity:.65">{{ h.quando }}</span>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </aside>
+      </sc-if>
+
+      <main style="flex:1;display:flex;flex-direction:column;min-width:0;background:var(--bg)">
+        <div style="flex:1;overflow-y:auto;overflow-x:hidden;padding:26px 26px 6px">
+          <div style="max-width:820px;margin:0 auto;display:flex;flex-direction:column;gap:24px">
+
+            <sc-if value="{{ vazio }}" hint-placeholder-val="{{ false }}">
+              <div style="border:2px solid var(--hard);background:var(--surf);padding:28px;display:flex;flex-direction:column;gap:12px;align-items:flex-start">
+                <div style="width:30px;height:30px;background:var(--or)"></div>
+                <span style="font-size:22px;font-weight:800;letter-spacing:-.02em">Manda a imagem aí 👋</span>
+                <span style="font-size:14px;line-height:1.55;color:var(--tx2);max-width:52ch;text-wrap:pretty">Anexa uma foto, escreve o que você quer mudar em português normal e eu devolvo a versão editada aqui embaixo. Se não gostar, é só pedir de outro jeito.</span>
+              </div>
+            </sc-if>
+
+            <sc-for list="{{ mensagens }}" as="m" hint-placeholder-count="3">
+              <div style="display:flex;flex-direction:column;animation:riseIn .3s ease both">
+
+                <sc-if value="{{ m.usuario }}" hint-placeholder-val="{{ true }}">
+                  <div style="align-self:flex-end;position:relative;max-width:74%;background:var(--or);color:var(--onor);border:2px solid var(--hard);padding:13px 15px;display:flex;flex-direction:column;gap:10px">
+                    <sc-if value="{{ m.temAnexo }}" hint-placeholder-val="{{ true }}">
+                      <div style="display:flex;gap:9px;align-items:center;background:rgba(0,0,0,.2);padding:7px 9px">
+                        <div style="width:34px;height:34px;flex:none;background:repeating-linear-gradient(135deg,rgba(0,0,0,.4) 0 6px,rgba(0,0,0,.12) 6px 12px)"></div>
+                        <span style="font-family:'JetBrains Mono',monospace;font-size:10px">{{ m.anexo }}</span>
+                      </div>
+                    </sc-if>
+                    <span style="font-size:14.5px;line-height:1.5;font-weight:500;text-wrap:pretty">{{ m.texto }}</span>
+                    <div style="position:absolute;right:-14px;bottom:14px;width:0;height:0;border-top:10px solid transparent;border-bottom:10px solid transparent;border-left:14px solid var(--hard)"></div>
+                    <div style="position:absolute;right:-10px;bottom:16px;width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-left:10px solid var(--or)"></div>
+                  </div>
+                </sc-if>
+
+                <sc-if value="{{ m.ia }}" hint-placeholder-val="{{ true }}">
+                  <div style="align-self:flex-start;position:relative;max-width:88%;background:var(--surf);border:2px solid var(--hard);padding:14px 16px;display:flex;flex-direction:column;gap:13px">
+                    <div style="display:flex;align-items:center;gap:8px">
+                      <div style="width:12px;height:12px;background:var(--or)"></div>
+                      <span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.14em;color:var(--tx2)">FOSCO IA</span>
+                    </div>
+
+                    <sc-if value="{{ m.carregando }}" hint-placeholder-val="{{ false }}">
+                      <div style="display:flex;flex-direction:column;gap:11px">
+                        <span style="font-size:13.5px;color:var(--tx2)">Já tô editando, dois segundos…</span>
+                        <div style="display:flex;gap:4px">
+                          <div style="width:56px;height:6px;background:var(--or);animation:pulseBar 1.1s ease-in-out infinite"></div>
+                          <div style="width:56px;height:6px;background:var(--or);animation:pulseBar 1.1s ease-in-out .18s infinite"></div>
+                          <div style="width:56px;height:6px;background:var(--or);animation:pulseBar 1.1s ease-in-out .36s infinite"></div>
+                        </div>
+                      </div>
+                    </sc-if>
+
+                    <sc-if value="{{ m.pronto }}" hint-placeholder-val="{{ true }}">
+                      <div style="display:flex;flex-direction:column;gap:13px">
+                        <span style="font-size:14.5px;line-height:1.5;text-wrap:pretty">{{ m.texto }}</span>
+
+                        <div onMouseDown="{{ m.iniciarArraste }}" style="position:relative;width:100%;height:320px;overflow:hidden;cursor:ew-resize;user-select:none;border:2px solid var(--hard);background:repeating-linear-gradient(135deg,var(--sa) 0 9px,var(--sb) 9px 18px)">
+                          <div style="position:absolute;left:10px;bottom:10px;font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--tx2);background:var(--surf);padding:3px 6px;border:1px solid var(--line)">ORIGINAL</div>
+                          <div style="position:absolute;inset:0;overflow:hidden;width:{{ m.compararPct }}">
+                            <div style="position:absolute;top:0;left:0;height:100%;width:860px;background:repeating-linear-gradient(135deg,#43210F 0 9px,#2C1710 9px 18px)"></div>
+                            <div style="position:absolute;left:10px;top:10px;white-space:nowrap;font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--onor);background:var(--or);padding:3px 6px">RESULTADO V{{ m.versao }}</div>
+                          </div>
+                          <div style="position:absolute;top:0;bottom:0;width:3px;background:var(--or);left:{{ m.compararPct }}"></div>
+                          <div style="position:absolute;top:50%;width:30px;height:30px;background:var(--or);border:2px solid var(--hard);transform:translate(-50%,-50%);left:{{ m.compararPct }};display:flex;align-items:center;justify-content:center;color:var(--onor);font-size:12px;font-weight:700">↔</div>
+                        </div>
+
+                        <div style="display:flex;flex-wrap:wrap;gap:0;border:2px solid var(--hard)">
+                          <button onClick="{{ m.variar }}" style="flex:1;padding:10px 12px;background:var(--surf2);border:none;border-right:2px solid var(--hard);color:var(--tx);font-size:12px;font-weight:600;cursor:pointer" style-hover="background:var(--or);color:var(--onor)">Variações</button>
+                          <button onClick="{{ irEditor }}" style="flex:1;padding:10px 12px;background:var(--surf2);border:none;border-right:2px solid var(--hard);color:var(--tx);font-size:12px;font-weight:600;cursor:pointer" style-hover="background:var(--or);color:var(--onor)">Abrir no editor</button>
+                          <button style="flex:1;padding:10px 12px;background:var(--surf2);border:none;color:var(--tx);font-size:12px;font-weight:600;cursor:pointer" style-hover="background:var(--or);color:var(--onor)">Baixar PNG</button>
+                        </div>
+
+                        <sc-if value="{{ m.temVariacoes }}" hint-placeholder-val="{{ false }}">
+                          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+                            <div style="height:104px;background:repeating-linear-gradient(135deg,#43210F 0 7px,#2C1710 7px 14px);border:2px solid var(--or);cursor:pointer"></div>
+                            <div style="height:104px;background:repeating-linear-gradient(135deg,#34241A 0 7px,#241812 7px 14px);border:2px solid var(--hard);cursor:pointer" style-hover="border-color:var(--or)"></div>
+                            <div style="height:104px;background:repeating-linear-gradient(135deg,var(--sa) 0 7px,var(--sb) 7px 14px);border:2px solid var(--hard);cursor:pointer" style-hover="border-color:var(--or)"></div>
+                          </div>
+                        </sc-if>
+                      </div>
+                    </sc-if>
+
+                    <div style="position:absolute;left:-14px;top:18px;width:0;height:0;border-top:10px solid transparent;border-bottom:10px solid transparent;border-right:14px solid var(--hard)"></div>
+                    <div style="position:absolute;left:-10px;top:20px;width:0;height:0;border-top:7px solid transparent;border-bottom:7px solid transparent;border-right:10px solid var(--surf)"></div>
+                  </div>
+                </sc-if>
+              </div>
+            </sc-for>
+            <div style="height:2px"></div>
+          </div>
+        </div>
+
+        <div style="padding:12px 20px 18px;border-top:2px solid var(--hard);background:var(--surf)">
+          <div style="max-width:820px;margin:0 auto;display:flex;flex-direction:column;gap:9px">
+            <sc-if value="{{ showQuickChips }}" hint-placeholder-val="{{ true }}">
+              <div style="display:flex;flex-wrap:wrap;gap:6px">
+                <sc-for list="{{ atalhos }}" as="a" hint-placeholder-count="5">
+                  <button onClick="{{ a.usar }}" style="padding:6px 10px;background:transparent;border:1.5px solid var(--line);color:var(--tx2);font-size:11.5px;cursor:pointer" style-hover="border-color:var(--or);background:var(--or);color:var(--onor)">{{ a.rotulo }}</button>
+                </sc-for>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ temAnexoNovo }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex;align-items:center;gap:9px;align-self:flex-start;background:var(--surf2);border:2px solid var(--or);padding:6px 9px">
+                <div style="width:28px;height:28px;background:repeating-linear-gradient(135deg,var(--sa) 0 6px,var(--sb) 6px 12px)"></div>
+                <span style="font-family:'JetBrains Mono',monospace;font-size:10px">{{ anexoNovo }}</span>
+                <button onClick="{{ removerAnexo }}" style="background:transparent;border:none;color:var(--tx2);font-size:15px;cursor:pointer;padding:0 2px">×</button>
+              </div>
+            </sc-if>
+
+            <div style="display:flex;align-items:stretch;gap:0;border:2px solid var(--hard);background:var(--bg)">
+              <button onClick="{{ anexar }}" title="Anexar imagem" style="width:46px;flex:none;background:var(--surf2);border:none;border-right:2px solid var(--hard);color:var(--tx);font-size:18px;cursor:pointer" style-hover="background:var(--or);color:var(--onor)">＋</button>
+              <input value="{{ rascunho }}" onChange="{{ escrever }}" onKeyDown="{{ teclar }}" placeholder="O que você quer mudar? ex.: tira o poste do fundo e esquenta a luz" style="flex:1;min-width:0;background:transparent;border:none;outline:none;color:var(--tx);font-size:14.5px;padding:13px 14px" />
+              <button onClick="{{ enviar }}" style="padding:0 22px;flex:none;background:var(--or);border:none;border-left:2px solid var(--hard);color:var(--onor);font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;cursor:pointer" style-hover="background:var(--or2)">Editar</button>
+            </div>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--tx2);text-align:center;letter-spacing:.08em">ARRASTE A BARRA LARANJA NA IMAGEM PARA COMPARAR ANTES / DEPOIS</span>
+          </div>
+        </div>
+      </main>
+    </div>
+    </sc-if>
+
+    <sc-if value="{{ verGaleria }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;display:flex;flex-direction:column;min-width:0;overflow-y:auto;overflow-x:hidden;background:var(--bg)">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:2px solid var(--hard);background:var(--surf);position:sticky;top:0">
+        <div style="display:flex;flex-direction:column;gap:3px">
+          <span style="font-size:19px;font-weight:800;letter-spacing:-.02em">Suas edições</span>
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--tx2)">18 ARQUIVOS · 240 MB</span>
+        </div>
+        <div style="display:flex;gap:0;border:2px solid var(--hard)">
+          <sc-for list="{{ filtros }}" as="f" hint-placeholder-count="3">
+            <button onClick="{{ f.usar }}" style="padding:8px 13px;background:{{ f.bg }};border:none;border-right:1px solid var(--hard);color:{{ f.fg }};font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.08em;cursor:pointer">{{ f.rotulo }}</button>
+          </sc-for>
+        </div>
+      </div>
+      <div style="padding:22px;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px">
+        <sc-for list="{{ galeria }}" as="g" hint-placeholder-count="8">
+          <div onClick="{{ g.abrir }}" style="border:2px solid var(--hard);background:var(--surf);cursor:pointer;display:flex;flex-direction:column" style-hover="border-color:var(--or);transform:translateY(-2px)">
+            <div style="height:160px;background:repeating-linear-gradient(135deg,var(--sa) 0 8px,var(--sb) 8px 16px);position:relative">
+              <span style="position:absolute;top:8px;left:8px;font-family:'JetBrains Mono',monospace;font-size:9px;background:var(--or);color:var(--onor);padding:3px 6px">{{ g.tag }}</span>
+            </div>
+            <div style="padding:10px 11px;display:flex;flex-direction:column;gap:3px;border-top:2px solid var(--hard)">
+              <span style="font-size:12.5px;font-weight:600">{{ g.titulo }}</span>
+              <span style="font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--tx2)">{{ g.quando }} · {{ g.versoes }} VERSÕES</span>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+    </sc-if>
+
+    <sc-if value="{{ verEditor }}" hint-placeholder-val="{{ false }}">
+    <div style="flex:1;display:flex;min-width:0;overflow-y:auto;overflow-x:hidden;background:var(--bg);flex-direction:{{ dirEditor }}">
+      <div style="width:{{ larguraRail }};flex:none;border-right:{{ bordaRail }};border-bottom:2px solid var(--hard);background:var(--surf);display:flex;flex-direction:{{ dirFerramentas }}">
+        <sc-for list="{{ ferramentas }}" as="f" hint-placeholder-count="6">
+          <button onClick="{{ f.usar }}" title="{{ f.nome }}" style="flex:1;height:58px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;background:{{ f.bg }};border:none;border-bottom:2px solid var(--hard);color:{{ f.fg }};cursor:pointer">
+            <span style="font-size:15px;line-height:1">{{ f.icone }}</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:7.5px;letter-spacing:.06em">{{ f.curto }}</span>
+          </button>
+        </sc-for>
+      </div>
+
+      <div style="flex:1;display:flex;flex-direction:column;min-width:0">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 16px;border-bottom:2px solid var(--hard);background:var(--surf)">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.1em;color:var(--tx2)">FERRAMENTA: <span style="color:var(--or);font-weight:700">{{ ferramentaAtiva }}</span></span>
+          <div style="display:flex;gap:0;border:2px solid var(--hard)">
+            <button onClick="{{ desfazer }}" style="padding:6px 12px;background:var(--surf2);border:none;border-right:2px solid var(--hard);color:var(--tx);font-size:11.5px;cursor:pointer" style-hover="background:var(--or);color:var(--onor)">Desfazer</button>
+            <button style="padding:6px 12px;background:var(--or);border:none;color:var(--onor);font-size:11.5px;font-weight:700;cursor:pointer">Aplicar</button>
+          </div>
+        </div>
+
+        <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:26px;min-height:220px;overflow:hidden">
+          <div style="position:relative;width:100%;max-width:640px;aspect-ratio:3/2;border:2px solid var(--hard);background:repeating-linear-gradient(135deg,#43210F 0 10px,#2C1710 10px 20px)">
+            <div style="position:absolute;left:14%;top:12%;right:22%;bottom:18%;border:2px dashed var(--or)"></div>
+            <div style="position:absolute;left:14%;top:12%;width:11px;height:11px;background:var(--or);transform:translate(-50%,-50%)"></div>
+            <div style="position:absolute;right:22%;top:12%;width:11px;height:11px;background:var(--or);transform:translate(50%,-50%)"></div>
+            <div style="position:absolute;left:14%;bottom:18%;width:11px;height:11px;background:var(--or);transform:translate(-50%,50%)"></div>
+            <div style="position:absolute;right:22%;bottom:18%;width:11px;height:11px;background:var(--or);transform:translate(50%,50%)"></div>
+            <span style="position:absolute;bottom:10px;right:10px;font-family:'JetBrains Mono',monospace;font-size:9.5px;background:var(--or);color:var(--onor);padding:3px 6px">área selecionada · 62%</span>
+          </div>
+        </div>
+      </div>
+
+      <aside style="width:{{ larguraPainel }};flex:none;border-left:{{ bordaPainel }};border-top:2px solid var(--hard);background:var(--surf);display:flex;flex-direction:column;overflow-y:auto">
+        <div style="padding:12px 14px;border-bottom:2px solid var(--hard);font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.14em;color:var(--tx2)">AJUSTES</div>
+        <sc-for list="{{ sliders }}" as="s" hint-placeholder-count="3">
+          <div style="padding:13px 14px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;justify-content:space-between;align-items:baseline">
+              <span style="font-size:12px;font-weight:600">{{ s.rotulo }}</span>
+              <span style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--or);font-weight:700">{{ s.valor }}</span>
+            </div>
+            <div onMouseDown="{{ s.arrastar }}" style="height:16px;display:flex;align-items:center;cursor:ew-resize;user-select:none">
+              <div style="position:relative;width:100%;height:5px;background:var(--surf2);border:1px solid var(--line)">
+                <div style="position:absolute;top:0;bottom:0;left:0;background:var(--or);width:{{ s.pct }}"></div>
+                <div style="position:absolute;top:50%;width:13px;height:13px;background:var(--or);border:2px solid var(--hard);transform:translate(-50%,-50%);left:{{ s.pct }}"></div>
+              </div>
+            </div>
+          </div>
+        </sc-for>
+        <div style="padding:12px 14px;border-bottom:2px solid var(--hard);border-top:1px solid var(--line);font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.14em;color:var(--tx2)">CAMADAS</div>
+        <sc-for list="{{ camadas }}" as="c" hint-placeholder-count="3">
+          <div style="display:flex;align-items:center;gap:9px;padding:9px 14px;border-bottom:1px solid var(--line);cursor:pointer" style-hover="background:var(--or);color:var(--onor)">
+            <div style="width:22px;height:22px;flex:none;background:repeating-linear-gradient(135deg,var(--sa) 0 5px,var(--sb) 5px 10px);border:1px solid var(--line)"></div>
+            <span style="font-size:11.5px;flex:1">{{ c.nome }}</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:9px;opacity:.7">{{ c.opac }}</span>
+          </div>
+        </sc-for>
+        <button onClick="{{ irChat }}" style="margin:14px;padding:11px;background:var(--or);border:2px solid var(--hard);color:var(--onor);font-size:12px;font-weight:700;cursor:pointer" style-hover="background:var(--or2)">Pedir pra IA ajustar</button>
+      </aside>
+    </div>
+    </sc-if>
+
+  </div>
+  </div>
+
+  <sc-if value="{{ mostrarTabbar }}" hint-placeholder-val="{{ false }}">
+    <nav style="display:flex;border-top:2px solid var(--hard);background:var(--surf);flex:none">
+      <sc-for list="{{ abasBaixo }}" as="t" hint-placeholder-count="3">
+        <button onClick="{{ t.ir }}" style="flex:1;padding:13px 0;background:{{ t.bg }};border:none;border-right:1px solid var(--hard);color:{{ t.fg }};font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.08em;cursor:pointer">{{ t.rotulo }}</button>
+      </sc-for>
+    </nav>
+  </sc-if>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;appName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Fosco&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;showHistory&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;},&quot;showQuickChips&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;}}">
+class Component extends DCLogic {
+  state = {
+    view: "chat",
+    tema: "dark",
+    device: "desktop",
+    rascunho: "",
+    anexoNovo: null,
+    filtro: "TUDO",
+    ferramenta: "Máscara",
+    ajustes: { "Tamanho do pincel": 34, "Suavidade da borda": 62, "Opacidade": 88 },
+    mensagens: [
+      { id: 1, role: "user", texto: "Deixa o fundo mais desfocado e troca o céu por um fim de tarde.", anexo: "varanda_raw.jpg" },
+      { id: 2, role: "ai", status: "done", versao: 1, compare: 58, variacoes: false,
+        texto: "Feito! Separei você do fundo, dei um desfoque suave e coloquei um céu de fim de tarde. Deixei o tom de pele igual pra não ficar artificial." },
+      { id: 3, role: "user", texto: "Boa. Agora puxa o laranja pra um tom mais fosco e reforça as sombras." },
+      { id: 4, role: "ai", status: "done", versao: 2, compare: 45, variacoes: false,
+        texto: "Tirei um pouco da saturação do laranja e escureci as sombras. Se quiser mais dramático, só falar." }
+    ],
+    historico: [
+      { id: "a", titulo: "Retrato na varanda", quando: "agora" },
+      { id: "b", titulo: "Catálogo — tênis 04", quando: "ontem" },
+      { id: "c", titulo: "Fundo removido / lote", quando: "3 dias" },
+      { id: "d", titulo: "Capa do álbum", quando: "1 sem" }
+    ],
+    atalhos: ["Remover fundo", "Trocar o céu", "Melhorar nitidez", "Luz de estúdio", "Tirar objeto", "Expandir enquadramento"]
+  };
+
+  galeriaBase = [
+    { titulo: "Retrato na varanda", tag: "CÉU", quando: "hoje", versoes: 3 },
+    { titulo: "Tênis 04 — frente", tag: "FUNDO", quando: "ontem", versoes: 5 },
+    { titulo: "Tênis 04 — lateral", tag: "FUNDO", quando: "ontem", versoes: 2 },
+    { titulo: "Capa do álbum", tag: "COR", quando: "1 sem", versoes: 8 },
+    { titulo: "Mesa do café", tag: "LUZ", quando: "1 sem", versoes: 1 },
+    { titulo: "Fachada da loja", tag: "OBJETO", quando: "2 sem", versoes: 4 },
+    { titulo: "Retrato equipe", tag: "LUZ", quando: "2 sem", versoes: 2 },
+    { titulo: "Produto flat lay", tag: "FUNDO", quando: "3 sem", versoes: 6 }
+  ];
+
+  componentWillUnmount() { this.soltar(); }
+
+  enviar = () => {
+    const t = this.state.rascunho.trim();
+    if (!t) return;
+    const base = Date.now();
+    const anexo = this.state.anexoNovo;
+    this.setState(s => ({
+      rascunho: "", anexoNovo: null, view: "chat",
+      mensagens: [...s.mensagens,
+        { id: base, role: "user", texto: t, anexo },
+        { id: base + 1, role: "ai", status: "loading", versao: 0, compare: 50, variacoes: false }]
+    }));
+    setTimeout(() => this.setState(s => ({
+      mensagens: s.mensagens.map(m => m.id === base + 1 ? {
+        ...m, status: "done",
+        versao: s.mensagens.filter(x => x.role === "ai" && x.status === "done").length + 1,
+        texto: "Prontinho — apliquei sobre a última versão e mantive a resolução original. Compara arrastando a barra."
+      } : m)
+    })), 1600);
+  };
+
+  escrever = e => this.setState({ rascunho: e.target.value });
+  teclar = e => { if (e.key === "Enter") { e.preventDefault(); this.enviar(); } };
+  anexar = () => this.setState({ anexoNovo: "imagem_" + (Math.floor(Math.random() * 90) + 10) + ".jpg" });
+
+  arrastarBarra(getEl, aplicar, e) {
+    const el = getEl(e);
+    const mover = ev => {
+      const r = el.getBoundingClientRect();
+      aplicar(Math.max(2, Math.min(98, ((ev.clientX - r.left) / r.width) * 100)));
+    };
+    mover(e);
+    this._mover = mover;
+    window.addEventListener("mousemove", mover);
+    window.addEventListener("mouseup", this.soltar);
+  }
+  soltar = () => {
+    if (this._mover) window.removeEventListener("mousemove", this._mover);
+    window.removeEventListener("mouseup", this.soltar);
+    this._mover = null;
+  };
+
+  renderVals() {
+    const S = this.state;
+    const abaDef = [["chat", "Chat"], ["galeria", "Galeria"], ["editor", "Editor"]];
+    const tab = (ativo) => ({ bg: ativo ? "var(--hard)" : "transparent", fg: ativo ? "var(--or)" : "var(--onor)" });
+    const tabBaixo = (ativo) => ({ bg: ativo ? "var(--or)" : "var(--surf)", fg: ativo ? "var(--onor)" : "var(--tx2)" });
+    const pill = (ativo) => ({ bg: ativo ? "var(--or)" : "var(--surf2)", fg: ativo ? "var(--onor)" : "var(--tx)" });
+    const mobile = S.device === "mobile";
+
+    return {
+      appName: this.props.appName ?? "Fosco",
+      showQuickChips: this.props.showQuickChips ?? true,
+      tema: S.tema,
+      rotuloTema: S.tema === "dark" ? "☾ ESCURO" : "☀ CLARO",
+      trocarTema: () => this.setState(s => ({ tema: s.tema === "dark" ? "light" : "dark" })),
+      rotuloDevice: mobile ? "▭ MOBILE" : "▬ DESKTOP",
+      trocarDevice: () => this.setState(s => ({ device: s.device === "mobile" ? "desktop" : "mobile" })),
+      larguraApp: mobile ? "430px" : "100%",
+      mostrarRail: !mobile && (this.props.showHistory ?? true),
+      mostrarTabbar: mobile,
+      verChat: S.view === "chat", verGaleria: S.view === "galeria", verEditor: S.view === "editor",
+      vazio: S.mensagens.length === 0,
+      irEditor: () => this.setState({ view: "editor" }),
+      irChat: () => this.setState({ view: "chat" }),
+      abas: abaDef.map(([id, rotulo]) => ({ rotulo, ativo: S.view === id, ...tab(S.view === id), ir: () => this.setState({ view: id }) })),
+      abasBaixo: abaDef.map(([id, rotulo]) => ({ rotulo, ...tabBaixo(S.view === id), ir: () => this.setState({ view: id }) })),
+      larguraPainel: mobile ? "100%" : "238px",
+      bordaPainel: mobile ? "0" : "2px solid var(--hard)",
+      dirFerramentas: mobile ? "row" : "column",
+      dirEditor: mobile ? "column" : "row",
+      alturaRail: mobile ? "auto" : "100%",
+      larguraRail: mobile ? "100%" : "62px",
+      bordaRail: mobile ? "0" : "2px solid var(--hard)",
+      rascunho: S.rascunho,
+      anexoNovo: S.anexoNovo || "",
+      temAnexoNovo: !!S.anexoNovo,
+      escrever: this.escrever, teclar: this.teclar, enviar: this.enviar, anexar: this.anexar,
+      removerAnexo: () => this.setState({ anexoNovo: null }),
+      novoChat: () => this.setState({ mensagens: [], view: "chat", rascunho: "", anexoNovo: null }),
+      historico: S.historico.map(h => ({ ...h, abrir: () => this.setState({ view: "chat" }) })),
+      atalhos: S.atalhos.map(r => ({ rotulo: r, usar: () => this.setState({ rascunho: r.toLowerCase() }) })),
+      filtros: ["TUDO", "RECENTES", "FAVORITOS"].map(f => ({ rotulo: f, ...pill(S.filtro === f), usar: () => this.setState({ filtro: f }) })),
+      galeria: (S.filtro === "RECENTES" ? this.galeriaBase.slice(0, 4) : S.filtro === "FAVORITOS" ? this.galeriaBase.filter((_, i) => i % 3 === 0) : this.galeriaBase)
+        .map(g => ({ ...g, abrir: () => this.setState({ view: "editor" }) })),
+      ferramentaAtiva: S.ferramenta,
+      ferramentas: [["Mover", "MOVE", "✥"], ["Recortar", "CROP", "⌗"], ["Máscara", "MASK", "◐"], ["Pincel", "BRUSH", "✎"], ["Borracha", "ERASE", "◻"], ["Texto", "TEXT", "T"]]
+        .map(([nome, curto, icone]) => ({ nome, curto, icone, ...pill(S.ferramenta === nome), usar: () => this.setState({ ferramenta: nome }) })),
+      desfazer: () => {},
+      sliders: Object.keys(S.ajustes).map(k => ({
+        rotulo: k,
+        valor: Math.round(S.ajustes[k]),
+        pct: S.ajustes[k].toFixed(1) + "%",
+        arrastar: e => this.arrastarBarra(
+          ev => ev.currentTarget.firstElementChild,
+          v => this.setState(s => ({ ajustes: { ...s.ajustes, [k]: v } })), e)
+      })),
+      camadas: [{ nome: "Céu substituído", opac: "100%" }, { nome: "Sujeito", opac: "100%" }, { nome: "Desfoque de fundo", opac: "72%" }, { nome: "Original", opac: "100%" }],
+      mensagens: S.mensagens.map(m => ({
+        usuario: m.role === "user", ia: m.role === "ai",
+        carregando: m.status === "loading", pronto: m.role === "ai" && m.status === "done",
+        texto: m.texto, anexo: m.anexo || "", temAnexo: !!m.anexo,
+        versao: m.versao, temVariacoes: !!m.variacoes,
+        compararPct: (m.compare || 50).toFixed(1) + "%",
+        variar: () => this.setState(s => ({ mensagens: s.mensagens.map(x => x.id === m.id ? { ...x, variacoes: !x.variacoes } : x) })),
+        iniciarArraste: e => this.arrastarBarra(ev => ev.currentTarget, v => this.setState(s => ({ mensagens: s.mensagens.map(x => x.id === m.id ? { ...x, compare: v } : x) })), e)
+      }))
+    };
+  }
+}
+</script>
+</body>
+</html>

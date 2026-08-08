@@ -1,0 +1,129 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   Tokens copiados literalmente de design/Editor IA - Chat.dc.html.
+   Nenhum valor foi arredondado, renomeado ou "melhorado" — os nomes curtos
+   (--or, --tx2, --sa) são os do handoff de propósito, para o diff visual
+   continuar trivial de fazer.
+
+   O tema claro apenas reescreve as variáveis, exatamente como o handoff faz em
+   `.app[data-theme="light"]`. Por isso o projeto inteiro não usa nenhuma
+   variante `dark:` — a troca de tema acontece no valor, não na classe.
+   --------------------------------------------------------------------------- */
+@theme {
+  --color-bg: #0c0c0c;
+  --color-surf: #141414;
+  --color-surf2: #1e1e1e;
+  --color-line: rgba(255, 255, 255, 0.12);
+  --color-hard: #000;
+  --color-tx: #edebe8;
+  --color-tx2: #908c88;
+  --color-or: #c9541f;
+  --color-or2: #e4682b;
+  --color-onor: #170d07;
+  --color-sa: #262626;
+  --color-sb: #1b1b1b;
+
+  --font-sans: Archivo, Helvetica, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  --animate-pulse-bar: pulseBar 1.1s ease-in-out infinite;
+  --animate-rise-in: riseIn 0.3s ease both;
+
+  @keyframes pulseBar {
+    0%,
+    100% {
+      opacity: 0.3;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+  @keyframes riseIn {
+    from {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
+[data-theme="light"] {
+  --color-bg: #edeae4;
+  --color-surf: #f6f4f0;
+  --color-surf2: #dfdbd4;
+  --color-line: rgba(0, 0, 0, 0.16);
+  --color-hard: #17150f;
+  --color-tx: #17150f;
+  --color-tx2: #6b6764;
+  --color-or: #c9541f;
+  --color-or2: #a8420f;
+  --color-onor: #fff6ef;
+  --color-sa: #d6d2ca;
+  --color-sb: #e5e1da;
+}
+
+@layer base {
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    background: #0c0c0c;
+    /* O handoff não tem reset, então herda o `normal` do browser. O preflight
+       do Tailwind força 1.5 e engordava cada chip, input e legenda em ~10%.
+       Onde o handoff define line-height (1.5 nos balões, 1.55 no estado
+       vazio), a classe do componente continua mandando. */
+    line-height: normal;
+  }
+
+  a {
+    color: #c9541f;
+    text-decoration: none;
+  }
+  a:hover {
+    color: #e4682b;
+  }
+
+  input,
+  textarea,
+  button {
+    font-family: inherit;
+  }
+  input::placeholder {
+    color: var(--color-tx2);
+  }
+
+  ::-webkit-scrollbar {
+    width: 9px;
+    height: 9px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-or);
+    border-radius: 0;
+  }
+}
+
+@layer utilities {
+  /* Os retângulos listrados do handoff. Continuam sendo o estado "sem imagem":
+     ficam na camada de baixo, atrás da foto, então enquanto nada carregou o
+     visual é idêntico ao protótipo. `--stripe` controla o passo da listra. */
+  .stripes {
+    background: repeating-linear-gradient(
+      135deg,
+      var(--color-sa) 0 var(--stripe, 8px),
+      var(--color-sb) var(--stripe, 8px) calc(var(--stripe, 8px) * 2)
+    );
+  }
+
+  /* Variante quente, usada onde o handoff pinta o "resultado" da IA. */
+  .stripes-warm {
+    background: repeating-linear-gradient(
+      135deg,
+      #43210f 0 var(--stripe, 9px),
+      #2c1710 var(--stripe, 9px) calc(var(--stripe, 9px) * 2)
+    );
+  }
+}
