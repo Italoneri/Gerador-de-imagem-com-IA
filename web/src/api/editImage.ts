@@ -52,9 +52,18 @@ export async function editImage(
   return ok({ blob, mimeType: blob.type || "image/png" });
 }
 
+/**
+ * Lê `.name` sem depender de `instanceof Error`: abortos chegam como
+ * `DOMException`, que nem todo runtime coloca na cadeia de protótipos de Error.
+ */
+function nameOf(cause: unknown): string {
+  const name = (cause as { name?: unknown } | null)?.name;
+  return typeof name === "string" ? name : "";
+}
+
 function abortReason(cause: unknown, userSignal?: AbortSignal): EditErrorCode {
   if (userSignal?.aborted) return "CANCELADO";
-  const name = cause instanceof Error ? cause.name : "";
+  const name = nameOf(cause);
   if (name === "TimeoutError" || name === "AbortError") return "TIMEOUT";
   return "SEM_REDE";
 }
